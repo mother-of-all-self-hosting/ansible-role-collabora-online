@@ -1,0 +1,92 @@
+---
+
+collabora_online_enabled: true
+
+collabora_online_identifier: collabora-online
+
+collabora_online_scheme: https
+
+collabora_online_hostname: ''
+
+# This must be set to `/`.
+# Installing under a different path prefix is not supported right now.
+collabora_online_path_prefix: /
+
+collabora_online_base_path: "/{{ collabora_online_identifier }}"
+
+collabora_online_systemd_required_services_list: ['docker.service']
+
+collabora_online_version: 22.05.10.2.1
+
+collabora_online_uid: ''
+collabora_online_gid: ''
+
+collabora_online_container_image: "{{ collabora_online_container_image_registry_prefix }}collabora/code:{{ collabora_online_container_image_tag }}"
+collabora_online_container_image_registry_prefix: docker.io/
+collabora_online_container_image_tag: "{{ collabora_online_version }}"
+
+collabora_online_container_network: "{{ collabora_online_identifier }}"
+
+# A list of additional container networks that the container would be connected to.
+# The playbook does not create these networks, so make sure they already exist.
+collabora_online_container_additional_networks: []
+
+# collabora_online_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
+# See `../templates/labels.j2` for details.
+#
+# To inject your own other container labels, see `collabora_online_container_labels_additional_labels`.
+collabora_online_container_labels_traefik_enabled: false
+collabora_online_container_labels_traefik_docker_network: ''
+collabora_online_container_labels_traefik_hostname: "{{ collabora_online_hostname }}"
+# The path prefix must either be `/` or not end with a slash (e.g. `/collabora`).
+collabora_online_container_labels_traefik_path_prefix: "{{ collabora_online_path_prefix }}"
+collabora_online_container_labels_traefik_rule: "Host(`{{ collabora_online_container_labels_traefik_hostname }}`){% if collabora_online_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ collabora_online_container_labels_traefik_path_prefix | quote }}`){% endif %}"
+collabora_online_container_labels_traefik_priority: 0
+collabora_online_container_labels_traefik_entrypoints: web-secure
+collabora_online_container_labels_traefik_tls: "{{ collabora_online_container_labels_traefik_entrypoints != 'web' }}"
+collabora_online_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+
+# Controls which additional headers to attach to all HTTP requests.
+# To add your own custom request headers, use `collabora_online_container_labels_traefik_additional_response_headers_custom`
+collabora_online_container_labels_traefik_additional_request_headers: "{{ collabora_online_container_labels_traefik_additional_request_headers_auto | combine(collabora_online_container_labels_traefik_additional_request_headers_custom) }}"
+collabora_online_container_labels_traefik_additional_request_headers_auto: {}
+collabora_online_container_labels_traefik_additional_request_headers_custom: {}
+
+# Controls which additional headers to attach to all HTTP responses.
+# To add your own custom response headers, use `collabora_online_container_labels_traefik_additional_response_headers_custom`
+collabora_online_container_labels_traefik_additional_response_headers: "{{ collabora_online_container_labels_traefik_additional_response_headers_auto | combine(collabora_online_container_labels_traefik_additional_response_headers_custom) }}"
+collabora_online_container_labels_traefik_additional_response_headers_auto: {}
+collabora_online_container_labels_traefik_additional_response_headers_custom: {}
+
+
+# Controls the `ssl.enable` option.
+# See: https://sdk.collaboraonline.com/docs/installation/Configuration.html#ssl-configuration
+collabora_online_ssl_enable: false
+# Controls the `ssl.termination` option
+# See: https://sdk.collaboraonline.com/docs/installation/Configuration.html#ssl-configuration
+collabora_online_ssl_termination: true
+
+# collabora_online_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
+# See `roles/custom/collabora_online/templates/labels.j2` for details.
+#
+# Example:
+# collabora_online_container_labels_additional_labels: |
+#   my.label=1
+#   another.label="here"
+collabora_online_container_labels_additional_labels: ''
+
+# Controls whether the collabora container exposes its HTTP port (tcp/9980 in the container).
+#
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:9980), or empty string to not expose.
+collabora_online_container_http_host_bind_port: ""
+
+# This variable defines an aliasgroup of hosts (Details: https://sdk.collaboraonline.com/docs/installation/Configuration.html?highlight=alias#multihost-configuration)
+# You might want to adjust this if you use multiple hosts (which is not the scope of this playbook)
+#
+# Example:
+# collabora_online_aliasgroup: "https://{{ 'nextcloud.hostname.here' | replace('.', '\\.') }}:443"
+collabora_online_aliasgroup: ''
+
+collabora_online_env_variable_username: "admin"
+collabora_online_env_variable_password: ""
+collabora_online_env_variable_extra_params: "--o:ssl.enable={{ collabora_online_ssl_enable }} --o:ssl.termination={{ collabora_online_ssl_termination }}"

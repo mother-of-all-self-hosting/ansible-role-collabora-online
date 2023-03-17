@@ -1,0 +1,26 @@
+---
+
+- block:
+    - when: collabora_online_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+
+    - when: collabora_online_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
+  tags:
+    - setup-all
+    - setup-collabora-online
+    - install-all
+    - install-collabora-online
+
+- block:
+    - when: not collabora_online_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
+  tags:
+    - setup-all
+    - setup-collabora-online
+
+- block:
+    - ansible.builtin.include_tasks: "{{ role_path }}/tasks/configure_collabora_app.yml"
+  tags:
+    - setup-collabora-app
+    - configure-collabora-app

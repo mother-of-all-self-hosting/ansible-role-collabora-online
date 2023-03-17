@@ -1,0 +1,1 @@
+collabora_online_url: "{{ collabora_online_scheme }}://{{ collabora_online_hostname }}{{ collabora_online_path_prefix }}"

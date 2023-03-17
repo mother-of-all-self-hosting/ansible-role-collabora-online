@@ -1,0 +1,25 @@
+---
+
+- name: Check existence of Collabora systemd service
+  ansible.builtin.stat:
+    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ collabora_online_identifier }}.service"
+  register: collabora_online_service_stat
+
+- when: collabora_online_service_stat.stat.exists | bool
+  block:
+    - name: Ensure Collabora systemd is stopped
+      ansible.builtin.service:
+        name: "{{ collabora_online_identifier }}"
+        state: stopped
+        enabled: false
+        daemon_reload: true
+
+    - name: Ensure Collabora systemd service doesn't exist
+      ansible.builtin.file:
+        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ collabora_online_identifier }}.service"
+        state: absent
+
+    - name: Ensure Collabora files deleted
+      ansible.builtin.file:
+        path: "{{ collabora_online_base_path }}"
+        state: absent
