@@ -24,6 +24,7 @@ collabora_online_gid: ''
 collabora_online_container_image: "{{ collabora_online_container_image_registry_prefix }}collabora/code:{{ collabora_online_container_image_tag }}"
 collabora_online_container_image_registry_prefix: docker.io/
 collabora_online_container_image_tag: "{{ collabora_online_version }}"
+collabora_online_container_image_force_pull: "{{ collabora_online_container_image.endswith(':latest') }}"
 
 collabora_online_container_network: "{{ collabora_online_identifier }}"
 
