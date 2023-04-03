@@ -8,7 +8,7 @@ traefik.docker.network={{ collabora_online_container_labels_traefik_docker_netwo
 {% set middlewares = [] %}
 
 {% if collabora_online_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ collabora_online_identifier }}-slashless-redirect.redirectregex.regex=({{ collabora_online_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ collabora_online_identifier }}-slashless-redirect.redirectregex.regex=^({{ collabora_online_container_labels_traefik_path_prefix | quote }})$
 traefik.http.middlewares.{{ collabora_online_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
 {% set middlewares = middlewares + [collabora_online_identifier + '-slashless-redirect'] %}
 {% endif %}
