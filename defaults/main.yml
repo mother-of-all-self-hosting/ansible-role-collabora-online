@@ -16,7 +16,7 @@ collabora_online_base_path: "/{{ collabora_online_identifier }}"
 
 collabora_online_systemd_required_services_list: ['docker.service']
 
-collabora_online_version: 22.05.12.1.1
+collabora_online_version: 22.05.13.1.1
 
 collabora_online_uid: ''
 collabora_online_gid: ''
