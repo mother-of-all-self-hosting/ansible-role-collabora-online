@@ -11,25 +11,7 @@
 collabora_online_enabled: true
 
 collabora_online_identifier: collabora-online
-
-collabora_online_scheme: https
-
-collabora_online_hostname: ''
-
-# This must be set to `/`.
-# Installing under a different path prefix is not supported right now.
-collabora_online_path_prefix: /
-
 collabora_online_base_path: "/{{ collabora_online_identifier }}"
-
-# List of systemd services that the Collabora Online systemd service depends on
-collabora_online_systemd_required_services_list: "{{ collabora_online_systemd_required_services_list_default + collabora_online_systemd_required_services_list_auto + collabora_online_systemd_required_services_list_custom }}"
-collabora_online_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
-collabora_online_systemd_required_services_list_auto: []
-collabora_online_systemd_required_services_list_custom: []
-
-# List of systemd services that the Collabora Online systemd service wants
-collabora_online_systemd_wanted_services_list: []
 
 # renovate: datasource=docker depName=collabora/code
 collabora_online_version: 24.04.13.2.1
@@ -37,12 +19,25 @@ collabora_online_version: 24.04.13.2.1
 collabora_online_uid: ''
 collabora_online_gid: ''
 
+collabora_online_hostname: ''
+
+collabora_online_scheme: https
+
+# This must be set to `/`.
+# Installing under a different path prefix is not supported right now.
+collabora_online_path_prefix: /
+
 collabora_online_container_image: "{{ collabora_online_container_image_registry_prefix }}collabora/code:{{ collabora_online_container_image_tag }}"
 collabora_online_container_image_tag: "{{ collabora_online_version }}"
 collabora_online_container_image_registry_prefix: "{{ collabora_online_container_image_registry_prefix_upstream }}"
 collabora_online_container_image_registry_prefix_upstream: "{{ collabora_online_container_image_registry_prefix_upstream_default }}"
 collabora_online_container_image_registry_prefix_upstream_default: docker.io/
 collabora_online_container_image_force_pull: "{{ collabora_online_container_image.endswith(':latest') }}"
+
+# Controls whether the collabora container exposes its HTTP port (tcp/9980 in the container).
+#
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:9980), or empty string to not expose.
+collabora_online_container_http_host_bind_port: ""
 
 collabora_online_container_network: "{{ collabora_online_identifier }}"
 
@@ -89,6 +84,15 @@ collabora_online_container_labels_traefik_additional_response_headers_auto: |
     | combine ({'Strict-Transport-Security': collabora_online_http_header_strict_transport_security} if collabora_online_http_header_strict_transport_security and collabora_online_container_labels_traefik_tls else {})
   }}
 collabora_online_container_labels_traefik_additional_response_headers_custom: {}
+
+# collabora_online_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
+# See `roles/custom/collabora_online/templates/labels.j2` for details.
+#
+# Example:
+# collabora_online_container_labels_additional_labels: |
+#   my.label=1
+#   another.label="here"
+collabora_online_container_labels_additional_labels: ''
 
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
@@ -141,6 +145,15 @@ collabora_online_floc_optout_enabled: true
 # See: `collabora_online_http_header_strict_transport_security`
 collabora_online_hsts_preload_enabled: false
 
+# List of systemd services that the Collabora Online systemd service depends on
+collabora_online_systemd_required_services_list: "{{ collabora_online_systemd_required_services_list_default + collabora_online_systemd_required_services_list_auto + collabora_online_systemd_required_services_list_custom }}"
+collabora_online_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
+collabora_online_systemd_required_services_list_auto: []
+collabora_online_systemd_required_services_list_custom: []
+
+# List of systemd services that the Collabora Online systemd service wants
+collabora_online_systemd_wanted_services_list: []
+
 # Controls whether putting Collabora Online in a frame on another website will be allowed.
 collabora_online_framing_enabled: true
 
@@ -150,20 +163,6 @@ collabora_online_ssl_enable: false
 # Controls the `ssl.termination` option
 # See: https://sdk.collaboraonline.com/docs/installation/Configuration.html#ssl-configuration
 collabora_online_ssl_termination: true
-
-# collabora_online_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
-# See `roles/custom/collabora_online/templates/labels.j2` for details.
-#
-# Example:
-# collabora_online_container_labels_additional_labels: |
-#   my.label=1
-#   another.label="here"
-collabora_online_container_labels_additional_labels: ''
-
-# Controls whether the collabora container exposes its HTTP port (tcp/9980 in the container).
-#
-# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:9980), or empty string to not expose.
-collabora_online_container_http_host_bind_port: ""
 
 # This variable defines an aliasgroup of hosts (Details: https://sdk.collaboraonline.com/docs/installation/Configuration.html?highlight=alias#multihost-configuration)
 # You might want to adjust this if you use multiple hosts (which is not the scope of this playbook)
