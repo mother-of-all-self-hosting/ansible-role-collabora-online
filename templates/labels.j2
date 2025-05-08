@@ -52,7 +52,7 @@ traefik.http.routers.{{ collabora_online_identifier }}.tls={{ collabora_online_c
 traefik.http.routers.{{ collabora_online_identifier }}.tls.certResolver={{ collabora_online_container_labels_traefik_tls_certResolver }}
 {% endif %}
 
-traefik.http.services.{{ collabora_online_identifier }}.loadbalancer.server.port=9980
+traefik.http.services.{{ collabora_online_identifier }}.loadbalancer.server.port={{ collabora_online_container_http_port }}
 {% endif %}
 
 {{ collabora_online_container_labels_additional_labels }}

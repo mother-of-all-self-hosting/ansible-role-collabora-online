@@ -30,7 +30,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--log-driver=none \
 			--network={{ collabora_online_container_network }} \
 			{% if collabora_online_container_http_host_bind_port %}
-			-p {{ collabora_online_container_http_host_bind_port }}:9980 \
+			-p {{ collabora_online_container_http_host_bind_port }}:{{ collabora_online_container_http_port }} \
 			{% endif %}
 			--env-file={{ collabora_online_base_path }}/env \
 			--label-file={{ collabora_online_base_path }}/labels \

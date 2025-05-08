@@ -46,6 +46,9 @@ collabora_online_container_image_force_pull: "{{ collabora_online_container_imag
 
 collabora_online_container_network: "{{ collabora_online_identifier }}"
 
+# The port number in the container
+collabora_online_container_http_port: 9980
+
 # A list of additional container networks that the container would be connected to.
 # The playbook does not create these networks, so make sure they already exist.
 collabora_online_container_additional_networks: "{{ collabora_online_container_additional_networks_auto + collabora_online_container_additional_networks_custom }}"
