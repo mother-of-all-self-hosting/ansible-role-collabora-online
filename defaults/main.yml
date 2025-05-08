@@ -19,6 +19,7 @@ collabora_online_version: 24.04.13.2.1
 collabora_online_uid: ''
 collabora_online_gid: ''
 
+# The hostname at which Collabora Online is served.
 collabora_online_hostname: ''
 
 collabora_online_scheme: https
@@ -39,6 +40,7 @@ collabora_online_container_image_force_pull: "{{ collabora_online_container_imag
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:9980), or empty string to not expose.
 collabora_online_container_http_host_bind_port: ""
 
+# The base container network. It will be auto-created by this role if it doesn't exist already.
 collabora_online_container_network: "{{ collabora_online_identifier }}"
 
 # The port number in the container
