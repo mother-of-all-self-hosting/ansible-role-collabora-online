@@ -98,7 +98,11 @@ collabora_online_http_header_content_type_options: nosniff
 
 # Specifies the value of the `Content-Security-Policy` header.
 # See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
-collabora_online_http_header_content_security_policy: frame-ancestors 'self'
+collabora_online_http_header_content_security_policy: |
+  {{
+    "" if collabora_online_framing_enabled
+    else "frame-ancestors 'self'"
+  }}
 
 # Specifies the value of the `Permission-Policy` header.
 # See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permission-Policy
@@ -130,6 +134,9 @@ collabora_online_floc_optout_enabled: true
 # - https://hstspreload.org/#opt-in
 # See: `collabora_online_http_header_strict_transport_security`
 collabora_online_hsts_preload_enabled: false
+
+# Controls whether putting Collabora Online in a frame on another website will be allowed.
+collabora_online_framing_enabled: true
 
 # Controls the `ssl.enable` option.
 # See: https://sdk.collaboraonline.com/docs/installation/Configuration.html#ssl-configuration
