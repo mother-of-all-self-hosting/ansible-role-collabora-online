@@ -22,7 +22,11 @@ collabora_online_path_prefix: /
 
 collabora_online_base_path: "/{{ collabora_online_identifier }}"
 
-collabora_online_systemd_required_services_list: ['docker.service']
+# List of systemd services that the Collabora Online systemd service depends on
+collabora_online_systemd_required_services_list: "{{ collabora_online_systemd_required_services_list_default + collabora_online_systemd_required_services_list_auto + collabora_online_systemd_required_services_list_custom }}"
+collabora_online_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
+collabora_online_systemd_required_services_list_auto: []
+collabora_online_systemd_required_services_list_custom: []
 
 # renovate: datasource=docker depName=collabora/code
 collabora_online_version: 24.04.13.2.1
