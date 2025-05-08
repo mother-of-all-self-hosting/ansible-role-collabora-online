@@ -25,16 +25,16 @@ ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_s
 ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ collabora_online_identifier }} 2>/dev/null || true'
 
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
-			--rm \
-			--name={{ collabora_online_identifier }} \
-			--log-driver=none \
-			--network={{ collabora_online_container_network }} \
-			{% if collabora_online_container_http_host_bind_port %}
-			-p {{ collabora_online_container_http_host_bind_port }}:{{ collabora_online_container_http_port }} \
-			{% endif %}
-			--env-file={{ collabora_online_base_path }}/env \
-			--label-file={{ collabora_online_base_path }}/labels \
-			{{ collabora_online_container_image }}
+      --rm \
+      --name={{ collabora_online_identifier }} \
+      --log-driver=none \
+      --network={{ collabora_online_container_network }} \
+      {% if collabora_online_container_http_host_bind_port %}
+      -p {{ collabora_online_container_http_host_bind_port }}:{{ collabora_online_container_http_port }} \
+      {% endif %}
+      --env-file={{ collabora_online_base_path }}/env \
+      --label-file={{ collabora_online_base_path }}/labels \
+      {{ collabora_online_container_image }}
 
 {% for network in collabora_online_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ collabora_online_identifier }}
