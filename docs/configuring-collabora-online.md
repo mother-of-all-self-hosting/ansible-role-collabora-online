@@ -67,6 +67,31 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 **Note**: hosting CODE under a subpath (by configuring the `collabora_online_path_prefix` variable) does not seem to be possible due to CODE's technical limitations.
 
+### Set a password for the admin interface
+
+You also need to set a password for the admin interface by adding following configuration to your `vars.yml` file. Make sure to replace `YOUR_ADMIN_INTERFACE_PASSWORD_HERE` with your own value. Note that **only alpha-numeric characters are accepted**.
+
+```yaml
+collabora_online_environment_variable_password: YOUR_ADMIN_INTERFACE_PASSWORD_HERE
+```
+
+The default username is set to `admin`. It can be changed by specifying another one with `collabora_online_environment_variable_username`.
+
+The admin interface will be available at `example.com/browser/dist/admin/admin.html`.
+
+### Define a WOPI host to connect
+
+To integrate a CODE instance to another software, you can use the WOPI (Web Application Open Platform Interface) protocol (refer [here](https://sdk.collaboraonline.com/docs/introduction.html?highlight=wopi) for how the protocol is related to CODE), and this role is configured to apply it as [this documentation at CODE](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#how-to-configure-docker-image) instructs.
+
+To define an allowed WOPI host, you can add and adjust following configuration to your `vars.yml` file:
+
+```yaml
+collabora_online_environment_variable_aliasgroup1: "https://<domain1>:443,https://<your-dot-escaped-aliasname1>|<your-dot-escaped-aliasname2>:443"
+```
+
+- `domain1` — the WOPI host, i.e. your preferred File Sync and Share solution that implements the WOPI protocol, for example `share.example.com`
+- `your-dot-escaped-aliasname|your-dot-escaped-aliasname2` — the aliasnames with which you can access the same WOPI host (in this case `domain1`). These aliasnames can be specified with regular expressions.
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the component.
@@ -89,9 +114,9 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 
 ## Usage
 
-After running the command for installation, Collabora Online becomes available at the specified hostname like `https://example.com`.
+After running the command for installation, a CODE instance becomes available at the specified hostname like `https://example.com`.
 
-To get started, go to the URL on a web browser and create a first workspace by inputting required information. For an email address, make sure to input your own email address, not the one specified to `collabora_online_environment_variable_mail_from_address`.
+To use it, you need to integrate it with a File Sync and Share solution that implements the WOPI protocol.
 
 ## Troubleshooting
 
