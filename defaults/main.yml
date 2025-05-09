@@ -176,3 +176,7 @@ collabora_online_environment_variable_aliasgroup1: ''
 collabora_online_environment_variable_username: "admin"
 collabora_online_environment_variable_password: ""
 collabora_online_environment_variable_extra_params: "--o:ssl.enable={{ collabora_online_ssl_enable }} --o:ssl.termination={{ collabora_online_ssl_termination }}"
+
+# Additional environment variables.
+# See: https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#setting-the-application-configuration-dynamically-via-environment-variables
+collabora_online_environment_variables_additional_variables: ''
