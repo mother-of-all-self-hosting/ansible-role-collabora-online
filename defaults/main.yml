@@ -71,9 +71,63 @@ collabora_online_container_labels_traefik_additional_request_headers_custom: {}
 # Controls which additional headers to attach to all HTTP responses.
 # To add your own custom response headers, use `collabora_online_container_labels_traefik_additional_response_headers_custom`
 collabora_online_container_labels_traefik_additional_response_headers: "{{ collabora_online_container_labels_traefik_additional_response_headers_auto | combine(collabora_online_container_labels_traefik_additional_response_headers_custom) }}"
-collabora_online_container_labels_traefik_additional_response_headers_auto: {}
+collabora_online_container_labels_traefik_additional_response_headers_auto: |
+  {{
+    {}
+    | combine ({'X-XSS-Protection': collabora_online_http_header_xss_protection} if collabora_online_http_header_xss_protection else {})
+    | combine ({'X-Content-Type-Options': collabora_online_http_header_content_type_options} if collabora_online_http_header_content_type_options else {})
+    | combine ({'Content-Security-Policy': collabora_online_http_header_content_security_policy} if collabora_online_http_header_content_security_policy else {})
+    | combine ({'Permission-Policy': collabora_online_http_header_content_permission_policy} if collabora_online_http_header_content_permission_policy else {})
+    | combine ({'Strict-Transport-Security': collabora_online_http_header_strict_transport_security} if collabora_online_http_header_strict_transport_security and collabora_online_container_labels_traefik_tls else {})
+  }}
 collabora_online_container_labels_traefik_additional_response_headers_custom: {}
 
+# Specifies the value of the `X-XSS-Protection` header
+# Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
+#
+# Learn more about it is here:
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+# - https://portswigger.net/web-security/cross-site-scripting/reflected
+collabora_online_http_header_xss_protection: "1; mode=block"
+
+# Specifies the value of the `X-Content-Type-Options` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+collabora_online_http_header_content_type_options: nosniff
+
+# Specifies the value of the `Content-Security-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+collabora_online_http_header_content_security_policy: frame-ancestors 'self'
+
+# Specifies the value of the `Permission-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permission-Policy
+collabora_online_http_header_content_permission_policy: "{{ 'interest-cohort=()' if collabora_online_floc_optout_enabled else '' }}"
+
+# Specifies the value of the `Strict-Transport-Security` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+collabora_online_http_header_strict_transport_security: "max-age=31536000; includeSubDomains{{ '; preload' if collabora_online_hsts_preload_enabled else '' }}"
+
+# Controls whether to send a "Permissions-Policy interest-cohort=();" header along with all responses
+#
+# Learn more about what it is here:
+# - https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea
+# - https://paramdeo.com/blog/opting-your-website-out-of-googles-floc-network
+# - https://amifloced.org/
+#
+# Of course, a better solution is to just stop using browsers (like Chrome), which participate in such tracking practices.
+# See: `collabora_online_content_permission_policy`
+collabora_online_floc_optout_enabled: true
+
+# Controls if HSTS preloading is enabled
+#
+# In its strongest and recommended form, the [HSTS policy](https://www.chromium.org/hsts) includes all subdomains, and
+# indicates a willingness to be "preloaded" into browsers:
+# `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
+# For more information visit:
+# - https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+# - https://hstspreload.org/#opt-in
+# See: `collabora_online_http_header_strict_transport_security`
+collabora_online_hsts_preload_enabled: false
 
 # Controls the `ssl.enable` option.
 # See: https://sdk.collaboraonline.com/docs/installation/Configuration.html#ssl-configuration
