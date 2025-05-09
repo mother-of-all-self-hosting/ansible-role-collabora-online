@@ -122,4 +122,4 @@ To use it, you need to integrate it with a File Sync and Share solution that imp
 
 ### Check the service's logs
 
-You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu docmost` (or how you/your playbook named the service, e.g. `mash-docmost`).
+You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu collabora-online` (or how you/your playbook named the service, e.g. `mash-collabora-online`).
