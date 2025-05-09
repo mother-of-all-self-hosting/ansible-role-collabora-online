@@ -45,7 +45,9 @@ collabora_online_container_network: "{{ collabora_online_identifier }}"
 
 # A list of additional container networks that the container would be connected to.
 # The playbook does not create these networks, so make sure they already exist.
-collabora_online_container_additional_networks: []
+collabora_online_container_additional_networks: "{{ collabora_online_container_additional_networks_auto + collabora_online_container_additional_networks_custom }}"
+collabora_online_container_additional_networks_auto: []
+collabora_online_container_additional_networks_custom: []
 
 # collabora_online_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `../templates/labels.j2` for details.
