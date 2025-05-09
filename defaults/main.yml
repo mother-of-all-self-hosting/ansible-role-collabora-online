@@ -20,6 +20,7 @@ collabora_online_base_path: "/{{ collabora_online_identifier }}"
 
 collabora_online_systemd_required_services_list: ['docker.service']
 
+# renovate: datasource=docker depName=collabora/code
 collabora_online_version: 24.04.13.2.1
 
 collabora_online_uid: ''
