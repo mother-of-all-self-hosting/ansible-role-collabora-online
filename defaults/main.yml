@@ -170,9 +170,9 @@ collabora_online_ssl_termination: true
 # You might want to adjust this if you use multiple hosts (which is not the scope of this playbook)
 #
 # Example:
-# collabora_online_aliasgroup: "https://{{ 'nextcloud.hostname.here' | replace('.', '\\.') }}:443"
-collabora_online_aliasgroup: ''
+# collabora_online_environment_variable_aliasgroup1: "https://{{ 'nextcloud.hostname.here' | replace('.', '\\.') }}:443"
+collabora_online_environment_variable_aliasgroup1: ''
 
-collabora_online_env_variable_username: "admin"
-collabora_online_env_variable_password: ""
-collabora_online_env_variable_extra_params: "--o:ssl.enable={{ collabora_online_ssl_enable }} --o:ssl.termination={{ collabora_online_ssl_termination }}"
+collabora_online_environment_variable_username: "admin"
+collabora_online_environment_variable_password: ""
+collabora_online_environment_variable_extra_params: "--o:ssl.enable={{ collabora_online_ssl_enable }} --o:ssl.termination={{ collabora_online_ssl_termination }}"
