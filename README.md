@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Collabora Online Ansible role
 
-This is an [Ansible](https://www.ansible.com/) role which installs the [Collabora Online Development Edition (CODE)](https://www.collaboraoffice.com/) office suite to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs the [Collabora Online Development Edition (CODE)](https://www.collaboraonline.com/code/) office suite to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
 This role *implicitly* depends on:
 
