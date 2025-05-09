@@ -16,13 +16,13 @@ SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# Setting up Collabora Online
+# Setting up Collabora Online Development Edition (CODE)
 
-This is an [Ansible](https://www.ansible.com/) role which installs [Collabora Online](https://docmost.com/) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [Collabora Online Development Edition (CODE)](https://www.collaboraonline.com/code/) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
-Collabora Online is a free and open-source collaborative wiki and documentation software, designed for seamless real-time collaboration. It can be used to manage a wiki, a knowledge base, project documentation, etc. It has various functions such as granular permissions management system, page history to track changes of articles, etc. It also supports diagramming tools like Draw.io, Excalidraw and Mermaid.
+CODE is the development version of [Collabora Online](https://www.collaboraonline.com/), which enables you to edit office documents online with integrations such as [Nextcloud](https://nextcloud.com/office/), [OwnCloud](https://owncloud.com/), and [XWiki](https://xwiki.com/en/Blog/Collabora-Connector-Application/).
 
-See the project's [documentation](https://docmost.com/docs/) to learn what Collabora Online does and why it might be useful to you.
+See the project's [documentation](https://www.collaboraonline.com/code/) to learn what CODE does and why it might be useful to you.
 
 ## Prerequisites
 
