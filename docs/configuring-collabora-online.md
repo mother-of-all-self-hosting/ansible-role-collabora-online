@@ -29,9 +29,9 @@ See the project's [documentation](https://www.collaboraonline.com/code/) to lear
 
 ## Prerequisites
 
-To run a Collabora Online instance it is necessary to prepare a [Redis](https://redis.io/) server for managing a metadata database.
+As CODE runs on the server and is interacted with a standard browser, there is no need for any client installation. However, please keep in mind that it is necessary to integrate it with another software which functions as a data storage and manages access control for users (see the entry "Do the programs run in a browser and / or as local clients?" on the [FAQs](https://www.collaboraonline.com/faqs/)). **It is not possible to edit office documents only with a CODE instance.**
 
-If you are looking for an Ansible role for Redis, you can check out [this role (ansible-role-redis)](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. Note that the team recommends to have a look at [this role (ansible-role-valkey)](https://github.com/mother-of-all-self-hosting/ansible-role-valkey) for [Valkey](https://valkey.io/) instead.
+If you are looking for an Ansible role for Nextcloud, you can check out [this role (ansible-role-nextcloud)](https://github.com/mother-of-all-self-hosting/ansible-role-nextcloud) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team, which can integrate CODE with a Nextcloud instance.
 
 ## Adjusting the playbook configuration
 
