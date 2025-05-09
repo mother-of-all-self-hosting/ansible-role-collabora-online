@@ -35,14 +35,14 @@ If you are looking for an Ansible role for Nextcloud, you can check out [this ro
 
 ## Adjusting the playbook configuration
 
-To enable Collabora Online with this role, add the following configuration to your `vars.yml` file.
+To enable CODE with this role, add the following configuration to your `vars.yml` file.
 
 **Note**: the path should be something like `inventory/host_vars/mash.example.com/vars.yml` if you use the [MASH Ansible playbook](https://github.com/mother-of-all-self-hosting/mash-playbook).
 
 ```yaml
 ########################################################################
 #                                                                      #
-# docmost                                                              #
+# collabora-online                                                     #
 #                                                                      #
 ########################################################################
 
@@ -50,14 +50,14 @@ collabora_online_enabled: true
 
 ########################################################################
 #                                                                      #
-# /docmost                                                             #
+# /collabora-online                                                    #
 #                                                                      #
 ########################################################################
 ```
 
 ### Set the hostname
 
-To enable the Collabora Online instance you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
+To enable the CODE instance you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
 collabora_online_hostname: "example.com"
@@ -65,7 +65,7 @@ collabora_online_hostname: "example.com"
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
-**Note**: hosting Collabora Online under a subpath (by configuring the `collabora_online_path_prefix` variable) does not seem to be possible due to Collabora Online's technical limitations.
+**Note**: hosting CODE under a subpath (by configuring the `collabora_online_path_prefix` variable) does not seem to be possible due to CODE's technical limitations.
 
 ### Set variables for connecting to a Redis server
 
