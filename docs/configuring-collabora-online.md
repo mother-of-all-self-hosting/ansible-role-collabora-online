@@ -24,6 +24,9 @@ CODE is the development version of [Collabora Online](https://www.collaboraonlin
 
 See the project's [documentation](https://www.collaboraonline.com/code/) to learn what CODE does and why it might be useful to you.
 
+>[!NOTE]
+> While there are several software porivided by Collabora Productivity Ltd such as Collabora Online, Collabora Office, this role is specifically configured to install a CODE instance.
+
 ## Prerequisites
 
 To run a Collabora Online instance it is necessary to prepare a [Redis](https://redis.io/) server for managing a metadata database.
