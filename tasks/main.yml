@@ -27,9 +27,3 @@
   tags:
     - setup-all
     - setup-collabora-online
-
-- block:
-    - ansible.builtin.include_tasks: "{{ role_path }}/tasks/configure_collabora_app.yml"
-  tags:
-    - setup-collabora-app
-    - configure-collabora-app
