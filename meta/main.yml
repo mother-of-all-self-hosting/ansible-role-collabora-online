@@ -3,7 +3,7 @@ galaxy_info:
   company: mash
   role_name: collabora_online
   namespace: mash
-  description: Collabora Online
+  description: Collabora Online Development Edition
   platforms:
     - name: Debian
       versions:

@@ -16,7 +16,7 @@
     - {'old': 'collabora_online_env_variable_password', 'new': 'collabora_online_environment_variable_password'}
     - {'old': 'collabora_online_env_variable_extra_params', 'new': 'collabora_online_environment_variable_extra_params'}
 
-- name: Fail if required Collabora settings not defined
+- name: Fail if required Collabora Online Development Edition settings not defined
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item }}`) for using this role.
@@ -31,7 +31,7 @@
 
 - when: collabora_online_container_labels_traefik_enabled | bool
   block:
-    - name: Fail if required Collabora Traefik settings not defined
+    - name: Fail if required Collabora Online Development Edition Traefik settings not defined
       ansible.builtin.fail:
         msg: >-
           You need to define a required configuration setting (`{{ item }}`).

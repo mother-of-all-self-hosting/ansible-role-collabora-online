@@ -4,13 +4,13 @@
 
 ---
 
-- name: Perform Collabora installation tasks
+- name: Perform Collabora Online Development Edition installation tasks
   block:
-    - name: Validate Collabora configuration
+    - name: Validate Collabora Online Development Edition configuration
       when: collabora_online_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
 
-    - name: Install Collabora
+    - name: Install Collabora Online Development Edition
       when: collabora_online_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
   tags:
@@ -19,9 +19,9 @@
     - install-all
     - install-collabora-online
 
-- name: Perform Collabora uninstallation tasks
+- name: Perform Collabora Online Development Edition uninstallation tasks
   block:
-    - name: Uninstall Collabora
+    - name: Uninstall Collabora Online Development Edition
       when: not collabora_online_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
   tags:

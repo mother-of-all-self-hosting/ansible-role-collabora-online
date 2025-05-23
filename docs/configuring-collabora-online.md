@@ -100,7 +100,7 @@ Take a look at:
 
 - [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `collabora_online_environment_variables_additional_variables` variable
 
-For a complete list of Collabora Online's config options that you could put in `collabora_online_environment_variables_additional_variables`, see its [environment variables](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#setting-the-application-configuration-dynamically-via-environment-variables).
+For a complete list of CODE's config options that you could put in `collabora_online_environment_variables_additional_variables`, see its [environment variables](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#setting-the-application-configuration-dynamically-via-environment-variables).
 
 ## Installing
 

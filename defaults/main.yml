@@ -19,7 +19,7 @@ collabora_online_version: 25.04.2.1.1
 collabora_online_uid: ''
 collabora_online_gid: ''
 
-# The hostname at which Collabora Online is served.
+# The hostname at which Collabora Online Development Edition is served.
 collabora_online_hostname: ''
 
 collabora_online_scheme: https
@@ -35,7 +35,7 @@ collabora_online_container_image_registry_prefix_upstream: "{{ collabora_online_
 collabora_online_container_image_registry_prefix_upstream_default: docker.io/
 collabora_online_container_image_force_pull: "{{ collabora_online_container_image.endswith(':latest') }}"
 
-# Controls whether the collabora container exposes its HTTP port (tcp/9980 in the container).
+# Controls whether the Collabora Online Development Edition container exposes its HTTP port (tcp/9980 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:9980), or empty string to not expose.
 collabora_online_container_http_host_bind_port: ""
@@ -147,16 +147,16 @@ collabora_online_floc_optout_enabled: true
 # See: `collabora_online_http_header_strict_transport_security`
 collabora_online_hsts_preload_enabled: false
 
-# List of systemd services that the Collabora Online systemd service depends on
+# List of systemd services that the Collabora Online Development Edition systemd service depends on
 collabora_online_systemd_required_services_list: "{{ collabora_online_systemd_required_services_list_default + collabora_online_systemd_required_services_list_auto + collabora_online_systemd_required_services_list_custom }}"
 collabora_online_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
 collabora_online_systemd_required_services_list_auto: []
 collabora_online_systemd_required_services_list_custom: []
 
-# List of systemd services that the Collabora Online systemd service wants
+# List of systemd services that the Collabora Online Development Edition systemd service wants
 collabora_online_systemd_wanted_services_list: []
 
-# Controls whether putting Collabora Online in a frame on another website will be allowed.
+# Controls whether putting Collabora Online Development Edition in a frame on another website will be allowed.
 collabora_online_framing_enabled: true
 
 # Controls the `ssl.enable` option.
