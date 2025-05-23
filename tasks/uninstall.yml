@@ -11,7 +11,7 @@
 
 - when: collabora_online_service_stat.stat.exists | bool
   block:
-    - name: Ensure Collabora Online Development Edition systemd is stopped
+    - name: Ensure Collabora Online Development Edition systemd service is stopped
       ansible.builtin.service:
         name: "{{ collabora_online_identifier }}"
         state: stopped
