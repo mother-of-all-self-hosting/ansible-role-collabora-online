@@ -3,12 +3,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Ensure Collabora Online Development Edition path exists
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: 0700
+    mode: "0700"
     owner: "{{ collabora_online_uid }}"
     group: "{{ collabora_online_gid }}"
   with_items:
@@ -18,7 +17,7 @@
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
     dest: "{{ collabora_online_base_path }}/{{ item }}"
-    mode: 0640
+    mode: "0640"
   with_items:
     - env
     - labels
@@ -45,4 +44,4 @@
   ansible.builtin.template:
     src: "{{ role_path }}/templates/systemd/collabora-online.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ collabora_online_identifier }}.service"
-    mode: 0644
+    mode: "0644"

@@ -3,27 +3,25 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Perform Collabora Online Development Edition installation tasks
-  block:
-    - name: Validate Collabora Online Development Edition configuration
-      when: collabora_online_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
-
-    - name: Install Collabora Online Development Edition
-      when: collabora_online_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
   tags:
     - setup-all
     - setup-collabora-online
     - install-all
     - install-collabora-online
+  block:
+    - name: Validate Collabora Online Development Edition configuration
+      when: collabora_online_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - name: Install Collabora Online Development Edition
+      when: collabora_online_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform Collabora Online Development Edition uninstallation tasks
+  tags:
+    - setup-all
+    - setup-collabora-online
   block:
     - name: Uninstall Collabora Online Development Edition
       when: not collabora_online_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
-  tags:
-    - setup-all
-    - setup-collabora-online

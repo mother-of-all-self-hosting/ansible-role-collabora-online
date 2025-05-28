@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: (Deprecation) Catch and report renamed settings
   ansible.builtin.fail:
     msg: >-
@@ -11,10 +10,10 @@
       Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
   when: "item.old in vars"
   with_items:
-    - {'old': 'collabora_online_aliasgroup', 'new': 'collabora_online_environment_variable_aliasgroup1'}
-    - {'old': 'collabora_online_env_variable_username', 'new': 'collabora_online_environment_variable_username'}
-    - {'old': 'collabora_online_env_variable_password', 'new': 'collabora_online_environment_variable_password'}
-    - {'old': 'collabora_online_env_variable_extra_params', 'new': 'collabora_online_environment_variable_extra_params'}
+    - { "old": "collabora_online_aliasgroup", "new": "collabora_online_environment_variable_aliasgroup1" }
+    - { "old": "collabora_online_env_variable_username", "new": "collabora_online_environment_variable_username" }
+    - { "old": "collabora_online_env_variable_password", "new": "collabora_online_environment_variable_password" }
+    - { "old": "collabora_online_env_variable_extra_params", "new": "collabora_online_environment_variable_extra_params" }
 
 - name: Fail if required Collabora Online Development Edition settings not defined
   ansible.builtin.fail:
@@ -29,7 +28,8 @@
     - collabora_online_environment_variable_password
     - collabora_online_environment_variable_aliasgroup1
 
-- when: collabora_online_container_labels_traefik_enabled | bool
+- name: Run if Traefik is enabled
+  when: collabora_online_container_labels_traefik_enabled | bool
   block:
     - name: Fail if required Collabora Online Development Edition Traefik settings not defined
       ansible.builtin.fail:

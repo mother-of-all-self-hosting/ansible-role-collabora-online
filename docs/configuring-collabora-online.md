@@ -69,7 +69,7 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 ### Set a password for the admin interface
 
-You also need to set a password for the admin interface by adding following configuration to your `vars.yml` file. Make sure to replace `YOUR_ADMIN_INTERFACE_PASSWORD_HERE` with your own value. Note that **only alpha-numeric characters are accepted**.
+You also need to set a password for the admin interface by adding following configuration to your `vars.yml` file. Make sure to replace `YOUR_ADMIN_INTERFACE_PASSWORD_HERE` with your own value. Note that **only alphanumeric characters are accepted**.
 
 ```yaml
 collabora_online_environment_variable_password: YOUR_ADMIN_INTERFACE_PASSWORD_HERE
@@ -81,7 +81,7 @@ The admin interface will be available at `example.com/browser/dist/admin/admin.h
 
 ### Define a WOPI host to connect
 
-To integrate a CODE instance to another software, you can use the WOPI (Web Application Open Platform Interface) protocol (refer [here](https://sdk.collaboraonline.com/docs/introduction.html?highlight=wopi) for how the protocol is related to CODE), and this role is configured to apply it as [this documentation at CODE](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#how-to-configure-docker-image) instructs.
+To integrate a CODE instance to another software, you can use the WOPI (Web Application Open Platform Interface) protocol (refer to [this page on the official documentation](https://sdk.collaboraonline.com/docs/introduction.html?highlight=wopi) for how the protocol is related to CODE), and this role is configured to apply it as [this documentation at CODE](https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#how-to-configure-docker-image) instructs.
 
 To define an allowed WOPI host, you can add and adjust following configuration to your `vars.yml` file:
 
