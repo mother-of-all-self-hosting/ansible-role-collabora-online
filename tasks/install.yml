@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -22,27 +23,67 @@
     - env
     - labels
 
-- name: Ensure Collabora Online Development Edition container image is pulled via community.docker.docker_image
-  when: devture_systemd_docker_base_container_image_pull_method == 'ansible-module'
-  community.docker.docker_image:
-    name: "{{ collabora_online_container_image }}"
-    source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
-    force_source: "{{ collabora_online_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
-    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else collabora_online_container_image_force_pull }}"
-  register: result
-  retries: "{{ devture_playbook_help_container_retries_count }}"
-  delay: "{{ devture_playbook_help_container_retries_delay }}"
-  until: result is not failed
+- name: Run if self-building of Collabora Online Development Edition container image is not enabled
+  when: "not collabora_online_container_image_self_build | bool"
+  block:
+    - name: Ensure Collabora Online Development Edition container image is pulled via community.docker.docker_image
+      when: devture_systemd_docker_base_container_image_pull_method == 'ansible-module'
+      community.docker.docker_image:
+        name: "{{ collabora_online_container_image }}"
+        source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
+        force_source: "{{ collabora_online_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
+        force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else collabora_online_container_image_force_pull }}"
+      register: result
+      retries: "{{ devture_playbook_help_container_retries_count }}"
+      delay: "{{ devture_playbook_help_container_retries_delay }}"
+      until: result is not failed
 
-- name: Ensure Collabora Online Development Edition container image is pulled via ansible.builtin.command
-  when: devture_systemd_docker_base_container_image_pull_method == 'command'
-  ansible.builtin.command:
-    cmd: "{{ devture_systemd_docker_base_host_command_docker }} pull {{ collabora_online_container_image }}"
-  register: result
-  retries: "{{ devture_playbook_help_container_retries_count }}"
-  delay: "{{ devture_playbook_help_container_retries_delay }}"
-  until: result is not failed
-  changed_when: "'Downloaded newer image' in result.stdout"
+    - name: Ensure Collabora Online Development Edition container image is pulled via ansible.builtin.command
+      when: devture_systemd_docker_base_container_image_pull_method == 'command'
+      ansible.builtin.command:
+        cmd: "{{ devture_systemd_docker_base_host_command_docker }} pull {{ collabora_online_container_image }}"
+      register: result
+      retries: "{{ devture_playbook_help_container_retries_count }}"
+      delay: "{{ devture_playbook_help_container_retries_delay }}"
+      until: result is not failed
+      changed_when: "'Downloaded newer image' in result.stdout"
+
+- name: Run if self-building of Collabora Online Development Edition container image is enabled
+  when: "collabora_online_container_image_self_build | bool"
+  block:
+    - name: Ensure Collabora Online Development Edition repository is present on self-build
+      ansible.builtin.git:
+        repo: "{{ collabora_online_container_image_self_build_repo }}"
+        version: "{{ collabora_online_container_image_self_build_repo_version }}"
+        dest: "{{ collabora_online_container_image_self_build_src_files_path }}"
+        force: "yes"
+      register: collabora_online_git_pull_results
+
+    # Invoking the `docker build` command here, instead of calling the `docker_image` Ansible module,
+    # because the latter does not support BuildKit.
+    # See: https://github.com/ansible-collections/community.general/issues/514
+    - name: Ensure Collabora Online Development Edition container image is built
+      ansible.builtin.shell:
+        chdir: "{{ collabora_online_container_image_self_build_repo_dockerfile_dir }}"
+        cmd: |
+          {{ devture_systemd_docker_base_host_command_docker }} build \
+          -t "{{ collabora_online_container_image_self_build_name }}" \
+          -f {{ collabora_online_container_image_self_build_repo_dockerfile }} \
+          .
+      environment:
+        DOCKER_BUILDKIT: "1"
+      register: result
+      changed_when: "'Successfully built' in result.stdout or ('writing image' in result.stderr and 'CACHED' not in result.stderr)"
+
+    - name: Ensure Collabora Online Development Edition cool-seccomp-profile.json is copied
+      # See: https://github.com/CollaboraOnline/online/tree/master/docker
+      ansible.builtin.copy:
+        src: "{{ collabora_online_container_image_self_build_src_files_path }}/docker/cool-seccomp-profile.json"
+        dest: "{{ collabora_online_base_path }}/cool-seccomp-profile.json"
+        remote_src: "yes"
+        mode: "0640"
+        owner: "{{ collabora_online_uid }}"
+        group: "{{ collabora_online_gid }}"
 
 - name: Ensure Collabora Online Development Edition container network is created via community.docker.docker_network
   when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'

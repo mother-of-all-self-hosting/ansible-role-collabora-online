@@ -32,9 +32,12 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% if collabora_online_container_http_host_bind_port %}
       -p {{ collabora_online_container_http_host_bind_port }}:{{ collabora_online_container_http_port }} \
       {% endif %}
+      {% if collabora_online_container_image_self_build %}
+      --security-opt seccomp={{ collabora_online_base_path }}/cool-seccomp-profile.json \
+      {% endif %}
       --env-file={{ collabora_online_base_path }}/env \
       --label-file={{ collabora_online_base_path }}/labels \
-      {{ collabora_online_container_image }}
+      {{ collabora_online_container_image_self_build_name if collabora_online_container_image_self_build else collabora_online_container_image }}
 
 {% for network in collabora_online_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ collabora_online_identifier }}

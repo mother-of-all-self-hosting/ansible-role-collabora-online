@@ -35,6 +35,14 @@ collabora_online_container_image_registry_prefix_upstream: "{{ collabora_online_
 collabora_online_container_image_registry_prefix_upstream_default: docker.io/
 collabora_online_container_image_force_pull: "{{ collabora_online_container_image.endswith(':latest') }}"
 
+collabora_online_container_image_self_build: false
+collabora_online_container_image_self_build_name: "collabora-online/online:{{ collabora_online_container_image_self_build_repo_version }}"
+collabora_online_container_image_self_build_repo: "https://github.com/CollaboraOnline/online.git"
+collabora_online_container_image_self_build_repo_version: "master" # The repository contains source core for a bunch of components, and it does not publish releases based on "collabora_online_version".
+collabora_online_container_image_self_build_src_files_path: "{{ collabora_online_base_path }}/docker-src"
+collabora_online_container_image_self_build_repo_dockerfile_dir: "{{ collabora_online_container_image_self_build_src_files_path }}/docker/from-packages"
+collabora_online_container_image_self_build_repo_dockerfile: "Dockerfile"
+
 # Controls whether the Collabora Online Development Edition container exposes its HTTP port (tcp/9980 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:9980), or empty string to not expose.
