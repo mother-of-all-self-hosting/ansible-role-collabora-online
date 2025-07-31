@@ -40,6 +40,13 @@
         - collabora_online_container_labels_traefik_hostname
         - collabora_online_container_labels_traefik_path_prefix
 
+    - name: Fail if collabora_online_container_labels_traefik_path_prefix is different than /
+      ansible.builtin.fail:
+        msg: >-
+          collabora_online_container_labels_traefik_path_prefix (`{{ collabora_online_container_labels_traefik_path_prefix }}`) must be `/`.
+          Collabora Online Development Edition does not support hosting under a subpath yet.
+      when: "collabora_online_container_labels_traefik_path_prefix != '/'"
+
     # We ensure it doesn't end with a slash, because we handle both (slash and no-slash).
     # Knowing that `collabora_online_container_labels_traefik_path_prefix` does not end with a slash
     # ensures we know how to set these routes up without having to do "does it end with a slash" checks elsewhere.
@@ -48,10 +55,3 @@
         msg: >-
           collabora_online_container_labels_traefik_path_prefix (`{{ collabora_online_container_labels_traefik_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/collabora`).
       when: "collabora_online_container_labels_traefik_path_prefix != '/' and collabora_online_container_labels_traefik_path_prefix[-1] == '/'"
-
-    - name: Fail if collabora_online_container_labels_traefik_path_prefix is not /
-      ansible.builtin.fail:
-        msg: >-
-          Using `collabora_online_container_labels_traefik_path_prefix` (`{{ collabora_online_container_labels_traefik_path_prefix }}`)
-          other than `/` is not supported right now.
-      when: "collabora_online_container_labels_traefik_path_prefix != '/'"
