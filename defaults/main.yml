@@ -162,7 +162,10 @@ collabora_online_systemd_required_services_list_auto: []
 collabora_online_systemd_required_services_list_custom: []
 
 # List of systemd services that the Collabora Online Development Edition systemd service wants
-collabora_online_systemd_wanted_services_list: []
+collabora_online_systemd_wanted_services_list: "{{ collabora_online_systemd_wanted_services_list_default + collabora_online_systemd_wanted_services_list_auto + collabora_online_systemd_wanted_services_list_custom }}"
+collabora_online_systemd_wanted_services_list_default: []
+collabora_online_systemd_wanted_services_list_auto: []
+collabora_online_systemd_wanted_services_list_custom: []
 
 # Controls whether putting Collabora Online Development Edition in a frame on another website will be allowed.
 collabora_online_framing_enabled: true
