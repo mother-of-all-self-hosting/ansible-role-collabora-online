@@ -42,7 +42,7 @@ To enable CODE with this role, add the following configuration to your `vars.yml
 ```yaml
 ########################################################################
 #                                                                      #
-# collabora-online                                                     #
+# collabora_online                                                     #
 #                                                                      #
 ########################################################################
 
@@ -50,7 +50,7 @@ collabora_online_enabled: true
 
 ########################################################################
 #                                                                      #
-# /collabora-online                                                    #
+# /collabora_online                                                    #
 #                                                                      #
 ########################################################################
 ```
