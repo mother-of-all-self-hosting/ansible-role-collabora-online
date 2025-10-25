@@ -29,7 +29,7 @@ See the project's [documentation](https://www.collaboraonline.com/code/) to lear
 
 ## Prerequisites
 
-To run a CODE instance it is necessary to prepare an integration software which functions as a data storage and manages access control for users (see the entry "Do the programs run in a browser and / or as local clients?" on the "technical requirements" tab on [FAQs](https://www.collaboraonline.com/faqs/)). **It is not possible to edit office documents only with a CODE instance.**
+To run a CODE instance it is necessary to prepare an integration software which functions as a data storage and manages access control for users (see the entry "Do the programs run in a browser and / or as local clients?" on the "technical requirements" tab on [FAQs](https://www.collaboraonline.com/faqs/). **It is not possible to edit office documents only with a CODE instance.**
 
 If you are looking for an Ansible role for Nextcloud, you can check out [ansible-role-nextcloud](https://github.com/mother-of-all-self-hosting/ansible-role-nextcloud) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. The role can integrate CODE with a Nextcloud instance.
 
