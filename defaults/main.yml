@@ -14,7 +14,7 @@ collabora_online_identifier: collabora-online
 collabora_online_base_path: "/{{ collabora_online_identifier }}"
 
 # renovate: datasource=docker depName=collabora/code
-collabora_online_version: 25.04.6.2.1
+collabora_online_version: 25.04.7.1.1
 
 collabora_online_uid: ''
 collabora_online_gid: ''
