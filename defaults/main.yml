@@ -102,7 +102,9 @@ collabora_online_container_labels_traefik_additional_response_headers_custom: {}
 # collabora_online_container_labels_additional_labels: |
 #   my.label=1
 #   another.label="here"
-collabora_online_container_labels_additional_labels: ""
+collabora_online_container_labels_additional_labels: "{{ collabora_online_container_labels_additional_labels_auto | combine(collabora_online_container_labels_additional_labels_custom) }}"
+collabora_online_container_labels_additional_labels_auto: {}
+collabora_online_container_labels_additional_labels_custom: {}
 
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
