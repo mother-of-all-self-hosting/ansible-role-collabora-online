@@ -167,6 +167,9 @@ collabora_online_systemd_wanted_services_list_default: []
 collabora_online_systemd_wanted_services_list_auto: []
 collabora_online_systemd_wanted_services_list_custom: []
 
+# Specify the timezone
+collabora_online_environment_variables_tz: UTC
+
 # Controls whether putting Collabora Online Development Edition in a frame on another website will be allowed.
 collabora_online_framing_enabled: true
 
