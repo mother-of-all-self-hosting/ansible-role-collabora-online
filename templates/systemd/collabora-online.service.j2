@@ -37,6 +37,9 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% endif %}
       --env-file={{ collabora_online_base_path }}/env \
       --label-file={{ collabora_online_base_path }}/labels \
+      {% for arg in collabora_online_container_extra_arguments %}
+      {{ arg }} \
+      {% endfor %}
       {{ collabora_online_container_image_self_build_name if collabora_online_container_image_self_build else collabora_online_container_image }}
 
 {% for network in collabora_online_container_additional_networks %}

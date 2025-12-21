@@ -107,6 +107,11 @@ collabora_online_container_labels_additional_labels: "{{ collabora_online_contai
 collabora_online_container_labels_additional_labels_auto: {}
 collabora_online_container_labels_additional_labels_custom: {}
 
+# A list of extra arguments to pass to the container (`docker create` command)
+collabora_online_container_extra_arguments: "{{ collabora_online_container_extra_arguments_auto + collabora_online_container_extra_arguments_custom }}"
+collabora_online_container_extra_arguments_auto: []
+collabora_online_container_extra_arguments_custom: []
+
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
 #
