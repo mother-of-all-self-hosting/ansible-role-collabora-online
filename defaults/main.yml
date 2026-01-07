@@ -101,11 +101,11 @@ collabora_online_container_labels_traefik_additional_response_headers_custom: {}
 #
 # Example:
 # collabora_online_container_labels_additional_labels_custom: |
-#   my.label=1
-#   another.label="here"
-collabora_online_container_labels_additional_labels: "{{ collabora_online_container_labels_additional_labels_auto | combine(collabora_online_container_labels_additional_labels_custom) }}"
-collabora_online_container_labels_additional_labels_auto: {}
-collabora_online_container_labels_additional_labels_custom: {}
+#   - my.label=1
+#   - another.label="here"
+collabora_online_container_labels_additional_labels: "{{ collabora_online_container_labels_additional_labels_auto + collabora_online_container_labels_additional_labels_custom }}"
+collabora_online_container_labels_additional_labels_auto: []
+collabora_online_container_labels_additional_labels_custom: []
 
 # A list of extra arguments to pass to the container (`docker create` command)
 collabora_online_container_extra_arguments: "{{ collabora_online_container_extra_arguments_auto + collabora_online_container_extra_arguments_custom }}"

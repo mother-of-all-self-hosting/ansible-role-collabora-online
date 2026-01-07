@@ -55,4 +55,6 @@ traefik.http.routers.{{ collabora_online_identifier }}.tls.certResolver={{ colla
 traefik.http.services.{{ collabora_online_identifier }}.loadbalancer.server.port={{ collabora_online_container_http_port }}
 {% endif %}
 
-{{ collabora_online_container_labels_additional_labels }}
+{% for arg in collabora_online_container_labels_additional_labels %}
+{{ arg }}
+{% endfor %}
