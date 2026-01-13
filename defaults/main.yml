@@ -19,13 +19,17 @@ collabora_online_version: 25.04.8.1.1
 collabora_online_uid: ""
 collabora_online_gid: ""
 
+# The scheme used for serving Collabora Online Development Edition.
+collabora_online_scheme: https
+
 # The hostname at which Collabora Online Development Edition is served.
 collabora_online_hostname: ""
 
-collabora_online_scheme: https
-
-# This must be set to `/`.
-# Installing under a different path prefix is not supported right now.
+# The path at which Collabora Online Development Edition is served.
+# This value must either be `/` or not end with a slash (e.g. `/code`).
+#
+# Hosting Collabora Online Development Edition under a subpath does not seem to be possible due to Collabora Online Development Edition's
+# technical limitations.
 collabora_online_path_prefix: /
 
 collabora_online_container_image: "{{ collabora_online_container_image_registry_prefix }}collabora/code:{{ collabora_online_container_image_tag }}"
@@ -67,7 +71,7 @@ collabora_online_container_additional_networks_custom: []
 collabora_online_container_labels_traefik_enabled: false
 collabora_online_container_labels_traefik_docker_network: ""
 collabora_online_container_labels_traefik_hostname: "{{ collabora_online_hostname }}"
-# The path prefix must either be `/` or not end with a slash (e.g. `/collabora`).
+# The path prefix must either be `/` or not end with a slash (e.g. `/code`).
 collabora_online_container_labels_traefik_path_prefix: "{{ collabora_online_path_prefix }}"
 collabora_online_container_labels_traefik_rule: "Host(`{{ collabora_online_container_labels_traefik_hostname }}`){% if collabora_online_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ collabora_online_container_labels_traefik_path_prefix | quote }}`){% endif %}"
 collabora_online_container_labels_traefik_priority: 0
@@ -200,5 +204,5 @@ collabora_online_environment_variable_password: ""
 collabora_online_environment_variable_extra_params: "--o:ssl.enable={{ collabora_online_ssl_enable }} --o:ssl.termination={{ collabora_online_ssl_termination }}"
 
 # Additional environment variables.
-# See: https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#setting-the-application-configuration-dynamically-via-environment-variables
+# See: https://sdk.collaboraonline.com/docs/installation/Collabora Online Development Edition_Docker_image.html#setting-the-application-configuration-dynamically-via-environment-variables
 collabora_online_environment_variables_additional_variables: ""
