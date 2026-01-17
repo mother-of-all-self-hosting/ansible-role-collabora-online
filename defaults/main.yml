@@ -47,7 +47,7 @@ collabora_online_container_image_self_build_src_files_path: "{{ collabora_online
 collabora_online_container_image_self_build_repo_dockerfile_dir: "{{ collabora_online_container_image_self_build_src_files_path }}/docker/from-packages"
 collabora_online_container_image_self_build_repo_dockerfile: "Dockerfile"
 
-# Controls whether the Collabora Online Development Edition container exposes its HTTP port (tcp/9980 in the container).
+# Controls whether the container exposes its HTTP port (tcp/9980 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:9980), or empty string to not expose.
 collabora_online_container_http_host_bind_port: ""
