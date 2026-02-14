@@ -72,8 +72,8 @@
           .
       environment:
         DOCKER_BUILDKIT: "1"
-      register: result
-      changed_when: "'Successfully built' in result.stdout or ('writing image' in result.stderr and 'CACHED' not in result.stderr)"
+      register: collabora_online_container_image_build_result
+      changed_when: "'Successfully built' in collabora_online_container_image_build_result.stdout or ('writing image' in collabora_online_container_image_build_result.stderr and 'CACHED' not in collabora_online_container_image_build_result.stderr)"
 
     - name: Ensure Collabora Online Development Edition cool-seccomp-profile.json is copied
       # See: https://github.com/CollaboraOnline/online/tree/master/docker
