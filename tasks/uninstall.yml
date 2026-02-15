@@ -24,21 +24,24 @@
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ collabora_online_identifier }}.service"
         state: absent
 
-    - name: Ensure Collabora Online Development Edition container network does not exist via community.docker.docker_network
-      when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
-      community.docker.docker_network:
-        name: "{{ collabora_online_container_network }}"
-        state: absent
-      register: collabora_online_network_deletion_result
+    - name: Ensure Collabora Online Development Edition container network does not exist
+      when: collabora_online_container_network_deletion_enabled
+      block:
+        - name: Ensure Collabora Online Development Edition container network does not exist via community.docker.docker_network
+          when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
+          community.docker.docker_network:
+            name: "{{ collabora_online_container_network }}"
+            state: absent
+          register: collabora_online_network_deletion_result
 
-    - name: Ensure Collabora Online Development Edition container network does not exist via ansible.builtin.command
-      when: devture_systemd_docker_base_container_network_creation_method == 'command'
-      ansible.builtin.command:
-        cmd: >-
-          {{ devture_systemd_docker_base_host_command_docker }} network rm
-          {{ collabora_online_container_network }}
-      register: collabora_online_network_deletion_result
-      changed_when: collabora_online_container_network in collabora_online_network_deletion_result.stdout
+        - name: Ensure Collabora Online Development Edition container network does not exist via ansible.builtin.command
+          when: devture_systemd_docker_base_container_network_creation_method == 'command'
+          ansible.builtin.command:
+            cmd: >-
+              {{ devture_systemd_docker_base_host_command_docker }} network rm
+              {{ collabora_online_container_network }}
+          register: collabora_online_network_deletion_result
+          changed_when: collabora_online_container_network in collabora_online_network_deletion_result.stdout
 
     - name: Ensure Collabora Online Development Edition path does not exist
       ansible.builtin.file:
