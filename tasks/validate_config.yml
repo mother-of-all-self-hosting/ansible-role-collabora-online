@@ -15,6 +15,7 @@
     - { "old": "collabora_online_env_variable_password", "new": "collabora_online_environment_variable_password" }
     - { "old": "collabora_online_env_variable_extra_params", "new": "collabora_online_environment_variable_extra_params" }
     - { "old": "collabora_online_http_header_content_permission_policy", "new": "collabora_online_http_header_permissions_policy" }
+    - { "old": "collabora_container_image_force_pull", "new": "<removed> (the new community.docker.docker_image_pull module handles this natively)" }
 
 - name: Fail if required Collabora Online Development Edition settings not defined
   ansible.builtin.fail:
