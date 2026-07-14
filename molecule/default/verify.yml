@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Verify Collabora Online Development Edition systemd service
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wait for Collabora Online Development Edition service to become active (up to 180s)
+      ansible.builtin.systemd:
+        name: collabora-online.service
+      register: collabora_online_service
+      until: collabora_online_service.status.ActiveState == 'active'
+      retries: 36
+      delay: 5
+
+    - name: Assert Collabora Online Development Edition service is active
+      ansible.builtin.assert:
+        that: collabora_online_service.status.ActiveState == 'active'
+        fail_msg: "collabora-online.service not active ({{ collabora_online_service.status.ActiveState }})"
+        success_msg: "collabora-online.service is active"
+
+    - name: Wait for Collabora Online Development Edition HTTP endpoint to respond (up to 10m)
+      ansible.builtin.uri:
+        url: "http://localhost:9980/"
+        method: GET
+        status_code: [200, 302]
+        follow_redirects: none
+      register: collabora_online_endpoint
+      until: collabora_online_endpoint.status in [200, 302]
+      retries: 120
+      delay: 5
+
+    - name: Assert Collabora Online Development Edition HTTP endpoint responds
+      ansible.builtin.assert:
+        that: collabora_online_endpoint.status in [200, 302]
+        fail_msg: "Collabora Online Development Edition did not respond as expected ({{ collabora_online_endpoint.status | default('no response') }})"
+        success_msg: "Collabora Online Development Edition responded with {{ collabora_online_endpoint.status }}"
+
+    - name: Show Collabora Online Development Edition systemd service status summary
+      ansible.builtin.debug:
+        msg:
+          - "Collabora Online Development Edition systemd: {{ collabora_online_service.status.ActiveState }}"
+          - "Collabora Online Development Edition HTTP: {{ collabora_online_endpoint.status }}"
