@@ -23,6 +23,12 @@
         fail_msg: "collabora-online.service not active ({{ collabora_online_service.status.ActiveState }})"
         success_msg: "collabora-online.service is active"
 
+    - name: Retrieve Collabora Online Development Edition service log for debugging
+      when: collabora_online_debug_service_enabled | bool
+      ansible.builtin.command:
+        cmd: journalctl -xeu collabora-online.service
+      changed_when: false
+
     - name: Wait for Collabora Online Development Edition HTTP endpoint to respond (up to 10m)
       ansible.builtin.uri:
         url: "http://localhost:9980/"
