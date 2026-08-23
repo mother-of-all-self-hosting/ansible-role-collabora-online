@@ -1,16 +1,40 @@
 # SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
 name: molecule
 
-on: [push, pull_request]  # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
+  push:
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "LICENSE"
+      - "LICENSES/**"
+      - "REUSE.toml"
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "LICENSE"
+      - "LICENSES/**"
+      - "REUSE.toml"
+  workflow_dispatch:
 
 jobs:
   molecule:
     name: Run Molecule scenario '${{ matrix.scenario }}' on ${{ matrix.distro }}
     runs-on: ubuntu-latest
+
+    # Same-repository pull requests already run via the push event;
+    # run pull_request jobs only for pull requests from forks.
+    if: >-
+      github.event_name != 'pull_request'
+      || github.event.pull_request.head.repo.full_name != github.repository
 
     strategy:
       matrix:
@@ -30,25 +54,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7.0.0
         with:
-          path: code
+          path: collabora-online
 
       - name: Set up Python
         uses: actions/setup-python@v6.3.0
         with:
-          python-version-file: code/.python-version
+          python-version-file: collabora-online/.python-version
           cache: pip
-          cache-dependency-path: code/molecule/requirements.txt
+          cache-dependency-path: collabora-online/molecule/requirements.txt
 
       - name: Install Python dependencies
-        working-directory: code
+        working-directory: collabora-online
         run: pip install -r molecule/requirements.txt
 
       - name: Cache Ansible collections
         uses: actions/cache@v6.1.0
         with:
           path: ~/.ansible/collections
-          key: ansible-collections-${{ hashFiles('code/molecule/default/requirements.yml') }}
+          key: ansible-collections-${{ hashFiles('collabora-online/molecule/default/requirements.yml') }}
 
       - name: Run Molecule
-        working-directory: code
+        working-directory: collabora-online
         run: molecule test --scenario-name ${{ matrix.scenario }}
