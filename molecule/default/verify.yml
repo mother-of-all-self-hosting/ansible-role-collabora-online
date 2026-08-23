@@ -1,14 +1,22 @@
 # SPDX-FileCopyrightText: 2026 Suguru Hirahara
 # SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-- name: Verify Collabora Online Development Edition systemd service
+- name: Verify Collabora Online Development Edition
   hosts: all
   become: true
   gather_facts: false
   tasks:
+    # Role defaults are not in scope here, but the version that Renovate bumps
+    # lives in them and is what the running server is checked against below.
+    - name: Load the Collabora Online Development Edition role defaults
+      ansible.builtin.include_vars:
+        file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
+        name: collabora_online_defaults
+
     - name: Wait for Collabora Online Development Edition service to become active (up to 180s)
       ansible.builtin.systemd:
         name: collabora-online.service
@@ -29,25 +37,202 @@
         cmd: journalctl -xeu collabora-online.service
       changed_when: false
 
-    - name: Wait for Collabora Online Development Edition HTTP endpoint to respond (up to 10m)
+    # `/hosting/capabilities` is served by coolwsd itself, only once it has
+    # finished reading its configuration and started its WOPI host. A container
+    # that merely started (or one whose configuration coolwsd rejected) does not
+    # answer here, which makes this the readiness gate for everything below.
+    #
+    # That it answers over plain HTTP at all is already a statement about the
+    # role's configuration: the image serves HTTPS by default, and only the
+    # `--o:ssl.enable=…` value that `templates/env.j2` puts into `extra_params`
+    # turns that off. Were that plumbing broken, this would fail on the TLS
+    # handshake rather than return JSON.
+    - name: Wait for Collabora Online Development Edition to report its capabilities (up to 10m)
       ansible.builtin.uri:
-        url: "http://localhost:9980/"
+        url: "http://localhost:9980/hosting/capabilities"
         method: GET
-        status_code: [200, 302]
         follow_redirects: none
-      register: collabora_online_endpoint
-      until: collabora_online_endpoint.status in [200, 302]
+        return_content: true
+      register: collabora_online_capabilities
+      until: collabora_online_capabilities.status == 200
       retries: 120
       delay: 5
 
-    - name: Assert Collabora Online Development Edition HTTP endpoint responds
+    # Collabora publishes its container images as `<product version>.<package
+    # revision>` - `26.04.3.1.1` is package revision 1 of product 26.04.3.1 - so
+    # the running server reports one component fewer than the role pins. The
+    # separator is part of the comparison, so that a server reporting 26.04.3.1
+    # is not accepted as a match for a pinned 26.04.3.10.1.
+    - name: Assert the running Collabora Online Development Edition is the version this role installs
       ansible.builtin.assert:
-        that: collabora_online_endpoint.status in [200, 302]
-        fail_msg: "Collabora Online Development Edition did not respond as expected ({{ collabora_online_endpoint.status | default('no response') }})"
-        success_msg: "Collabora Online Development Edition responded with {{ collabora_online_endpoint.status }}"
+        that:
+          - collabora_online_capabilities.json.productName is search('Collabora Online')
+          - (collabora_online_defaults.collabora_online_version | string).startswith(collabora_online_capabilities.json.productVersion ~ '.')
+        fail_msg: >-
+          Collabora Online Development Edition reports {{ collabora_online_capabilities.json.productVersion | default('no version') }},
+          which is not the product version of the pinned {{ collabora_online_defaults.collabora_online_version }}
+        success_msg: >-
+          {{ collabora_online_capabilities.json.productName }} reports
+          {{ collabora_online_capabilities.json.productVersion }}, matching the pinned
+          {{ collabora_online_defaults.collabora_online_version }}
 
-    - name: Show Collabora Online Development Edition systemd service status summary
+    # The WOPI discovery document is what an integration (Nextcloud, ownCloud,
+    # …) fetches to learn which editor to open a given file type in. coolwsd
+    # generates it from the editors it actually managed to load, so a server
+    # that came up without a working office core serves a stunted document
+    # rather than none at all - which is why this is parsed rather than merely
+    # fetched.
+    - name: Retrieve the Collabora Online Development Edition WOPI discovery document
+      ansible.builtin.uri:
+        url: "http://localhost:9980/hosting/discovery"
+        method: GET
+        follow_redirects: none
+        dest: /tmp/collabora-online-discovery.xml
+        status_code: 200
+      register: collabora_online_discovery
+      changed_when: false
+
+    - name: Assert the WOPI discovery document is served as XML
+      ansible.builtin.assert:
+        that: "'xml' in collabora_online_discovery.content_type"
+        fail_msg: "/hosting/discovery is served as {{ collabora_online_discovery.content_type }}, expected XML"
+        success_msg: "/hosting/discovery is served as {{ collabora_online_discovery.content_type }}"
+
+    - name: Install the WOPI discovery document parser
+      ansible.builtin.copy:
+        dest: /tmp/collabora-online-parse-discovery.py
+        mode: "0755"
+        content: |
+          # Parses the WOPI discovery document and fails unless it really is one:
+          # a <wopi-discovery> root listing edit and view actions for the document
+          # formats that the office core behind coolwsd is expected to handle.
+          import sys
+          import xml.etree.ElementTree as ElementTree
+
+          root = ElementTree.parse(sys.argv[1]).getroot()
+
+          if root.tag != 'wopi-discovery':
+              sys.exit('Root element is <%s>, expected <wopi-discovery>' % root.tag)
+
+          actions = root.findall('./net-zone/app/action')
+          extensions = {action.get('ext') for action in actions}
+          names = {action.get('name') for action in actions}
+
+          missing_extensions = {'odt', 'ods', 'odp', 'docx', 'xlsx', 'pptx'} - extensions
+          if missing_extensions:
+              sys.exit('No WOPI action for: %s' % ', '.join(sorted(missing_extensions)))
+
+          missing_names = {'edit', 'view'} - names
+          if missing_names:
+              sys.exit('No WOPI action of type: %s' % ', '.join(sorted(missing_names)))
+
+          print('%d WOPI actions over %d file extensions' % (len(actions), len(extensions)))
+
+    - name: Assert the WOPI discovery document lists the expected editing actions
+      ansible.builtin.command:
+        cmd: python3 /tmp/collabora-online-parse-discovery.py /tmp/collabora-online-discovery.xml
+      register: collabora_online_discovery_parsed
+      changed_when: false
+
+    # The admin endpoints are the only ones that consult the credentials which
+    # `templates/env.j2` renders from `collabora_online_environment_variable_username`
+    # and `..._password`. Checking all three outcomes is what makes this an
+    # assertion about those variables rather than about the endpoint merely
+    # existing: an anonymous request and a wrong password have to be rejected
+    # for the accepted one to mean anything.
+    - name: Request the Collabora Online Development Edition admin metrics without credentials
+      ansible.builtin.uri:
+        url: "http://localhost:9980/cool/getMetrics"
+        method: GET
+        follow_redirects: none
+        status_code: 401
+      changed_when: false
+
+    - name: Request the Collabora Online Development Edition admin metrics with a wrong password
+      ansible.builtin.uri:
+        url: "http://localhost:9980/cool/getMetrics"
+        method: GET
+        follow_redirects: none
+        url_username: "{{ collabora_online_environment_variable_username }}"
+        url_password: "not-{{ collabora_online_environment_variable_password }}"
+        force_basic_auth: true
+        status_code: 401
+      changed_when: false
+
+    - name: Request the Collabora Online Development Edition admin metrics with the configured credentials
+      ansible.builtin.uri:
+        url: "http://localhost:9980/cool/getMetrics"
+        method: GET
+        follow_redirects: none
+        url_username: "{{ collabora_online_environment_variable_username }}"
+        url_password: "{{ collabora_online_environment_variable_password }}"
+        force_basic_auth: true
+        status_code: 200
+        return_content: true
+      register: collabora_online_metrics
+      changed_when: false
+
+    - name: Assert the admin metrics come from a live coolwsd
+      ansible.builtin.assert:
+        that: "'coolwsd_count' in collabora_online_metrics.content"
+        fail_msg: "/cool/getMetrics accepted the configured credentials but did not report coolwsd metrics"
+        success_msg: "/cool/getMetrics rejects anonymous and wrong-password requests and serves coolwsd metrics to the configured user"
+
+    # Everything above is coolwsd answering about itself. Converting a document
+    # is the one probe that makes it do its actual job: it hands the file to a
+    # jailed child process running the office core, so only a container that
+    # could build that jail and load the core produces a PDF.
+    - name: Write a document for Collabora Online Development Edition to convert
+      ansible.builtin.copy:
+        dest: /tmp/collabora-online-probe.txt
+        mode: "0644"
+        content: |
+          Collabora Online Development Edition Molecule probe.
+
+    # `remote_src` is what keeps `filename` below a path on the host being
+    # tested. Without it, the `uri` action plugin looks the file up on the
+    # Ansible controller and pushes it, which fails here because the file is
+    # written on the remote - the option's documentation only mentions `src`,
+    # but it governs `form-multipart` filenames just the same.
+    - name: Convert the document to PDF through Collabora Online Development Edition
+      ansible.builtin.uri:
+        url: "http://localhost:9980/cool/convert-to/pdf"
+        method: POST
+        follow_redirects: none
+        remote_src: true
+        body_format: form-multipart
+        body:
+          data:
+            filename: /tmp/collabora-online-probe.txt
+            mime_type: text/plain
+        dest: /tmp/collabora-online-probe.pdf
+        status_code: 200
+        timeout: 180
+      changed_when: false
+
+    - name: Read back the converted document
+      ansible.builtin.slurp:
+        src: /tmp/collabora-online-probe.pdf
+      register: collabora_online_converted
+
+    - name: Assert Collabora Online Development Edition produced a real PDF
+      ansible.builtin.assert:
+        that:
+          - (collabora_online_converted.content | b64decode)[0:5] == '%PDF-'
+          - (collabora_online_converted.content | b64decode | length) > 1000
+        fail_msg: "/cool/convert-to/pdf did not return a PDF"
+        success_msg: >-
+          /cool/convert-to/pdf returned a
+          {{ collabora_online_converted.content | b64decode | length }}-byte PDF
+
+    - name: Show Collabora Online Development Edition verification summary
       ansible.builtin.debug:
         msg:
-          - "Collabora Online Development Edition systemd: {{ collabora_online_service.status.ActiveState }}"
-          - "Collabora Online Development Edition HTTP: {{ collabora_online_endpoint.status }}"
+          - "systemd: {{ collabora_online_service.status.ActiveState }}"
+          - >-
+            product: {{ collabora_online_capabilities.json.productName }}
+            {{ collabora_online_capabilities.json.productVersion }}
+            (role pins {{ collabora_online_defaults.collabora_online_version }})
+          - "discovery: {{ collabora_online_discovery_parsed.stdout }}"
+          - "admin: the credentials from the role's env file are accepted, anonymous and wrong-password requests are not"
+          - "conversion: {{ collabora_online_converted.content | b64decode | length }}-byte PDF produced"

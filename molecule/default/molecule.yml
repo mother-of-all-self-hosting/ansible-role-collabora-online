@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Suguru Hirahara
 # SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -12,7 +13,7 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: code-${MOLECULE_DISTRO:-ubuntu2604}-default
+  - name: collabora-online-${MOLECULE_DISTRO:-ubuntu2604}-default
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2604}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -37,8 +38,23 @@ provisioner:
         collabora_online_scheme: http
         collabora_online_hostname: localhost
         collabora_online_container_labels_traefik_enabled: false
+
+        # The role does not publish the port itself (Collabora Online is meant
+        # to be reached through a reverse-proxy), so the scenario publishes it
+        # for `verify.yml` to probe. Nothing else in the test container listens
+        # on 9980, so the container's own port can be reused on the host.
         collabora_online_container_http_host_bind_port: 9980
-        collabora_online_environment_variable_password: password
+
+        # `verify.yml` asserts that these reach coolwsd, by checking that the
+        # admin endpoints accept them and reject anything else. Kept free of
+        # dollar signs, which Molecule interpolates out of this file - values
+        # needing them belong in a vars file that a playbook includes instead.
+        collabora_online_environment_variable_username: molecule-admin
+        collabora_online_environment_variable_password: molecule-admin-secret
+
+        # A WOPI host allowlist entry is mandatory configuration for the role.
+        # No WOPI host takes part in this scenario, so this only has to be a
+        # well-formed value that coolwsd accepts at startup.
         collabora_online_environment_variable_aliasgroup1: https://example.com
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
