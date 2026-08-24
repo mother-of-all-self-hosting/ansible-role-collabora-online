@@ -228,11 +228,11 @@
     - name: Show Collabora Online Development Edition verification summary
       ansible.builtin.debug:
         msg:
-          - "systemd: {{ collabora_online_service.status.ActiveState }}"
+          - "CODE systemd: {{ collabora_online_service.status.ActiveState }}"
           - >-
-            product: {{ collabora_online_capabilities.json.productName }}
+            CODE product: {{ collabora_online_capabilities.json.productName }}
             {{ collabora_online_capabilities.json.productVersion }}
             (role pins {{ collabora_online_defaults.collabora_online_version }})
-          - "discovery: {{ collabora_online_discovery_parsed.stdout }}"
-          - "admin: the credentials from the role's env file are accepted, anonymous and wrong-password requests are not"
-          - "conversion: {{ collabora_online_converted.content | b64decode | length }}-byte PDF produced"
+          - "CODE discovery: {{ collabora_online_discovery_parsed.stdout }}"
+          - "CODE admin: the credentials from the role's env file are accepted, anonymous and wrong-password requests are not"
+          - "CODE conversion: {{ collabora_online_converted.content | b64decode | length }}-byte PDF produced"
