@@ -220,7 +220,7 @@
           /cool/convert-to/pdf returned a
           {{ collabora_online_converted.content | b64decode | length }}-byte PDF
 
-    - name: Show Collabora Online Development Edition verification summary
+    - name: Show the Collabora Online Development Edition verification summary
       ansible.builtin.debug:
         msg:
           - "CODE systemd: {{ collabora_online_service.status.ActiveState }}"
