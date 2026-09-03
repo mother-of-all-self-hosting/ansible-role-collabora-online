@@ -68,13 +68,8 @@
         that:
           - collabora_online_capabilities.json.productName is search('Collabora Online')
           - (collabora_online_defaults.collabora_online_version | string).startswith(collabora_online_capabilities.json.productVersion ~ '.')
-        fail_msg: >-
-          Collabora Online Development Edition reports {{ collabora_online_capabilities.json.productVersion | default('no version') }},
-          which is not the product version of the pinned {{ collabora_online_defaults.collabora_online_version }}
-        success_msg: >-
-          {{ collabora_online_capabilities.json.productName }} reports
-          {{ collabora_online_capabilities.json.productVersion }}, matching the pinned
-          {{ collabora_online_defaults.collabora_online_version }}
+        fail_msg: "Collabora Online Development Edition reports {{ collabora_online_capabilities.json.productVersion | default('none') }}, expected {{ collabora_online_defaults.collabora_online_version }}"
+        success_msg: "Collabora Online Development Edition reports {{ collabora_online_capabilities.json.productVersion }}"
 
     # The WOPI discovery document is what an integration (Nextcloud, ownCloud,
     # …) fetches to learn which editor to open a given file type in. coolwsd
