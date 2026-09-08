@@ -41,7 +41,7 @@
     - name: Retrieve the Collabora Online Development Edition systemd service log for debugging
       when: collabora_online_debug_service_enabled | bool
       ansible.builtin.command:
-        cmd: journalctl -xeu collabora-online.service
+        cmd: journalctl --no-pager --output=cat --unit=collabora-online.service
       changed_when: false
 
     # `/hosting/capabilities` is served by coolwsd itself, only once it has
