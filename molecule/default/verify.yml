@@ -10,6 +10,8 @@
   become: true
   gather_facts: false
   tasks:
+    - name: Verify that Collabora Online Development Edition works
+      block:
     # The role is not included in this playbook, so its defaults are not in
     # scope. Reading defaults/main.yml directly ties the version assertion
     # below.
@@ -235,3 +237,19 @@
           - "CODE discovery: {{ collabora_online_discovery_parsed.stdout }}"
           - "CODE admin: the credentials from the role's env file are accepted, anonymous and wrong-password requests are not"
           - "CODE conversion: {{ collabora_online_converted.content | b64decode | length }}-byte PDF produced"
+
+      rescue:
+        # Whatever went wrong, the reason is almost always in the systemd service log.
+        - name: Retrieve the Collabora Online Development Edition systemd service log
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=collabora-online.service
+          register: collabora_online_service_log
+          changed_when: false
+
+        - name: Show the Collabora Online Development Edition systemd service log
+          ansible.builtin.debug:
+            var: collabora_online_service_log.stdout_lines
+
+        - name: Fail because verification did not pass
+          ansible.builtin.fail:
+            msg: "Collabora Online Development Edition verification failed. The systemd service log is printed above."
