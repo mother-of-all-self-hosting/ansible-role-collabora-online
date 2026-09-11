@@ -9,6 +9,11 @@
   hosts: all
   become: true
   gather_facts: false
+
+  vars:
+    collabora_online_verify_units:
+      - collabora-online.service
+
   tasks:
     - name: Verify that Collabora Online Development Edition works
       block:
@@ -20,13 +25,14 @@
             file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
             name: collabora_online_defaults
 
-        - name: Wait for the Collabora Online Development Edition systemd service to become active (up to 180s)
+        - name: Wait for the Collabora Online Development Edition systemd services to become active (up to 180s each)
           ansible.builtin.systemd_service:
-            name: collabora-online.service
-          register: collabora_online_service
-          until: collabora_online_service.status.ActiveState == 'active'
+            name: "{{ item }}"
+          register: collabora_online_services
+          until: collabora_online_services.status.ActiveState == 'active'
           retries: 36
           delay: 5
+          loop: "{{ collabora_online_verify_units }}"
           # So that giving up is reported by the assertion below rather than as a
           # wall of systemd unit properties.
           failed_when: false
@@ -34,17 +40,20 @@
         # `Restart=always` in the systemd unit means that even a container which crashes
         # and gets restarted reads as active here, so this is a precondition rather than
         # a result.
-        - name: Assert the Collabora Online Development Edition systemd service is active
+        - name: Assert the Collabora Online Development Edition systemd services are active
           ansible.builtin.assert:
-            that: collabora_online_service.status.ActiveState == 'active'
-            fail_msg: "collabora-online.service is not active ({{ collabora_online_service.status.ActiveState }})"
-            success_msg: "collabora-online.service is active"
+            that: collabora_online_services.results | map(attribute='status.ActiveState') | unique | list == ['active']
+            fail_msg: >-
+              Not every service is active:
+              {{ dict(collabora_online_verify_units | zip(collabora_online_services.results | map(attribute='status.ActiveState'))) }}
+            success_msg: "Every systemd service is active"
 
-        - name: Retrieve the Collabora Online Development Edition systemd service log for debugging
+        - name: Retrieve the Collabora Online Development Edition systemd services log for debugging
           when: collabora_online_debug_service_enabled | bool
           ansible.builtin.command:
-            cmd: journalctl --no-pager --output=cat --unit=collabora-online.service
+            cmd: "journalctl --no-pager --output=cat --unit={{ item }}"
           changed_when: false
+          loop: "{{ collabora_online_verify_units }}"
 
         # `/hosting/capabilities` is served by coolwsd itself, only once it has
         # finished reading its configuration and started its WOPI host. A container
@@ -232,7 +241,7 @@
         - name: Show the Collabora Online Development Edition verification summary
           ansible.builtin.debug:
             msg:
-              - "CODE systemd: {{ collabora_online_service.status.ActiveState }}"
+              - "CODE systemd: {% for unit, state in collabora_online_verify_units | zip(collabora_online_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
               - "CODE version: {{ collabora_online_capabilities.json.productVersion }}"
               - "CODE discovery: {{ collabora_online_discovery_parsed.stdout }}"
               - "CODE admin: the credentials from the role's env file are accepted, anonymous and wrong-password requests are not"
