@@ -31,6 +31,7 @@ provisioner:
       all:
         # Helper variables
         collabora_online_debug_service_enabled: false
+        collabora_online_restarts_check_enabled: true
 
         # Variables for Collabora Online Development Edition
         collabora_online_uid: 1000
