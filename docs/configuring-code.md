@@ -1,17 +1,18 @@
 <!--
-SPDX-FileCopyrightText: 2020 - 2024 MDAD project contributors
-SPDX-FileCopyrightText: 2020 - 2024 Slavi Pantaleev
 SPDX-FileCopyrightText: 2020 Aaron Raimist
 SPDX-FileCopyrightText: 2020 Chris van Dijk
 SPDX-FileCopyrightText: 2020 Dominik Zajac
 SPDX-FileCopyrightText: 2020 Mickaël Cornière
+SPDX-FileCopyrightText: 2020-2024 MDAD project contributors
+SPDX-FileCopyrightText: 2020-2024 Slavi Pantaleev
 SPDX-FileCopyrightText: 2022 François Darveau
 SPDX-FileCopyrightText: 2022 Julian Foad
 SPDX-FileCopyrightText: 2022 Warren Bailey
 SPDX-FileCopyrightText: 2023 Antonis Christofides
 SPDX-FileCopyrightText: 2023 Felix Stupp
+SPDX-FileCopyrightText: 2023 Julian-Samuel Gebühr
 SPDX-FileCopyrightText: 2023 Pierre 'McFly' Marty
-SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2024-2026 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -117,6 +118,13 @@ If you use the MASH playbook, the shortcut commands with the [`just` program](ht
 After running the command for installation, a CODE instance becomes available at the specified hostname like `https://example.com`.
 
 To use it, you need to integrate it with a File Sync and Share solution that implements the WOPI protocol.
+
+### Admin Interface
+
+The admin interface with various statistics and information is available at `https://example.com/browser/dist/admin/admin.html`. Use your admin credentials for logging in:
+
+- the default username is `admin`, as specified with `collabora_online_environment_variable_username`
+- the password is the one you've specified with `collabora_online_environment_variable_password`
 
 ## Troubleshooting
 
