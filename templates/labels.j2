@@ -19,7 +19,7 @@ traefik.http.middlewares.{{ collabora_online_identifier }}-basic-auth.basicauth.
 {% endif %}
 
 {% if collabora_online_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ collabora_online_identifier }}-slashless-redirect.redirectregex.regex=^({{ collabora_online_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ collabora_online_identifier }}-slashless-redirect.redirectregex.regex=^(https?://[^/]+{{ collabora_online_container_labels_traefik_path_prefix | regex_escape }})$
 traefik.http.middlewares.{{ collabora_online_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
 {% set middlewares = middlewares + [collabora_online_identifier + '-slashless-redirect'] %}
 {% endif %}
