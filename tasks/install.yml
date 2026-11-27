@@ -64,7 +64,7 @@
         dockerfile: "{{ collabora_online_container_image_self_build_repo_dockerfile }}"
         path: "{{ collabora_online_container_image_self_build_src_files_path }}"
         pull: true
-        rebuild: "{{ 'always' if collabora_online_git_pull_results.before != collabora_online_git_pull_results.after | bool else 'never' }}"
+        rebuild: "{{ 'always' if collabora_online_git_pull_results.changed | bool else 'never' }}"
       register: collabora_online_container_image_build_result
 
     - name: Ensure Collabora Online Development Edition cool-seccomp-profile.json is copied
